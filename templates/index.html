@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Cloud Tech Conference 2026</title>
+    <meta name="description" content="A one-day technical conference about Google Cloud technologies. Discover the latest in Cloud Infrastructure, AI, and Data.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-animation"></div>
+    <header class="hero glass">
+        <div class="hero-content">
+            <h1>Google Cloud Tech Conference</h1>
+            <p class="subtitle">Innovating the Future of Cloud</p>
+            <div class="event-info">
+                <span class="info-item"><i class="icon">📅</i> {{ info.date }}</span>
+                <span class="info-item"><i class="icon">📍</i> {{ info.location }}</span>
+            </div>
+            <div class="clock-container glass">
+                <span id="current-time">00:00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="search-section glass">
+            <h2>Search Schedule</h2>
+            <div class="search-controls">
+                <input type="text" id="search-title" placeholder="Search by Talk Title..." aria-label="Search by Title">
+                <input type="text" id="search-speaker" placeholder="Search by Speaker Name..." aria-label="Search by Speaker">
+                <select id="search-category" aria-label="Filter by Category">
+                    <option value="">All Categories</option>
+                    <option value="1">Cloud Infrastructure</option>
+                    <option value="2">AI & Data</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="schedule-section">
+            <div id="schedule-list" class="schedule-list">
+                {% for item in schedule %}
+                    {% if item.type == 'break' %}
+                        <div class="schedule-item break glass">
+                            <div class="time-column">
+                                <span class="time">{{ item.time }}</span>
+                                <span class="duration">{{ item.duration }}</span>
+                            </div>
+                            <div class="content-column">
+                                <h3>{{ item.title }}</h3>
+                                <p>{{ item.description }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="schedule-item talk glass" data-title="{{ item.title | lower }}" data-category="{{ item.category }}" data-speakers="{% for speaker in item.speakers %}{{ speaker.first_name | lower }} {{ speaker.last_name | lower }} {% endfor %}">
+                            <div class="time-column">
+                                <span class="time">{{ item.time }}</span>
+                                <span class="category-badge cat-{{ item.category }}">
+                                    {% if item.category == '1' %}
+                                        Infrastructure
+                                    {% else %}
+                                        AI & Data
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="content-column">
+                                <h3>{{ item.title }}</h3>
+                                <p class="description">{{ item.description }}</p>
+                                <div class="speakers">
+                                    {% for speaker in item.speakers %}
+                                        <div class="speaker">
+                                            <span class="speaker-name">{{ speaker.first_name }} {{ speaker.last_name }}</span>
+                                            <a href="{{ speaker.linkedin }}" target="_blank" rel="noopener noreferrer" class="linkedin-link">LinkedIn</a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div id="no-results" class="no-results glass" style="display: none;">
+                <p>No talks found matching your criteria.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass">
+        <p>&copy; 2026 Google Cloud Tech Conference. Built with Flask.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
